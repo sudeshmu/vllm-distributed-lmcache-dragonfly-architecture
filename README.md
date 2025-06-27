@@ -38,6 +38,8 @@ A modern, multi-threaded, in-memory datastore built as a drop-in replacement for
 
 This architecture combines the strengths of each component to create a robust, scalable system.
 
+![alt text](https://github.com/sudeshmu/vllm-distributed-lmcache-dragonfly-architecture/blob/main/Architecture.png?raw=true)
+
 graph TD  
     subgraph "User-Facing Layer"  
         User1 \--\> LB  
