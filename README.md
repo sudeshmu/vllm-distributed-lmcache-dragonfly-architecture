@@ -40,35 +40,6 @@ This architecture combines the strengths of each component to create a robust, s
 
 ![alt text](https://github.com/sudeshmu/vllm-distributed-lmcache-dragonfly-architecture/blob/main/Architecture.png?raw=true)
 
-graph TD  
-    subgraph "User-Facing Layer"  
-        User1 \--\> LB  
-        User2 \--\> LB  
-        User3 \--\> LB  
-    end
-
-    LB(Load Balancer) \--\> |Routes request| VLLM\_Worker1  
-    LB \--\> VLLM\_Worker2  
-    LB \--\> VLLM\_Worker3
-
-    subgraph "Compute Cluster (Kubernetes, etc.)"  
-        VLLM\_Worker1(vLLM Worker 1\)  
-        VLLM\_Worker2(vLLM Worker 2\)  
-        VLLM\_Worker3(vLLM Worker 3\)  
-    end
-
-    subgraph "Distributed Caching Layer"  
-        DFLY(🚀 DragonflyDB Cluster)  
-    end
-
-    VLLM\_Worker1 \-- "LMCache Connector" \--\> DFLY  
-    VLLM\_Worker2 \-- "LMCache Connector" \--\> DFLY  
-    VLLM\_Worker3 \-- "LMCache Connector" \--\> DFLY
-
-    style DFLY fill:\#8E44AD,stroke:\#fff,stroke-width:2px,color:\#fff  
-    style VLLM\_Worker1 fill:\#2980B9,stroke:\#fff,stroke-width:2px,color:\#fff  
-    style VLLM\_Worker2 fill:\#2980B9,stroke:\#fff,stroke-width:2px,color:\#fff  
-    style VLLM\_Worker3 fill:\#2980B9,stroke:\#fff,stroke-width:2px,color:\#fff
 
 ### **Data Flow for an Inference Request**
 
