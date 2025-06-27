@@ -1,0 +1,48 @@
+%% Mermaid Diagram for vLLM + LMCache + DragonflyDB Architecture
+
+graph TD
+    %% Define subgraphs with simple IDs for styling, and quoted titles for display
+    subgraph sg_user ["User & Load Balancer"]
+        User("👤 User Request")
+        LB("Load Balancer")
+    end
+
+    subgraph sg_compute ["vLLM Compute Cluster"]
+        Router("Request Router / Scheduler")
+        Worker("vLLM Worker")
+        Prefill("GPU Prefill Operation")
+        Response("✅ Fast Response")
+    end
+
+    subgraph sg_cache ["Distributed Caching Layer"]
+        DFLY("🚀 DragonflyDB Cluster")
+    end
+
+    %% Define the connections
+    User --> LB
+    LB --> Router
+    Router --> Worker
+
+    Worker -- "1. Hash prefix & check cache" --> DFLY
+
+    %% Conditional Paths
+    DFLY -- "2a. CACHE HIT: Return KV Blocks" --> Worker
+    Worker -- "3a. Load KV to GPU & Decode" --> Response
+
+    DFLY -. "2b. CACHE MISS" .-> Worker
+    Worker -- "3b. Perform full prefill" --> Prefill
+    Prefill -- "4b. Store new KV Blocks" --> DFLY
+    Prefill -- "5b. Decode" --> Response
+
+    %% Styling now refers to the simple subgraph IDs
+    style sg_user fill:#f4f4f4,stroke:#333,stroke-width:1px
+    style sg_compute fill:#f4f4f4,stroke:#333,stroke-width:1px
+    style sg_cache fill:#fff2cc,stroke:#d6b656,stroke-width:2px
+    
+    style User fill:#D6EAF8,stroke:#3498DB,stroke-width:2px
+    style LB fill:#D6EAF8,stroke:#3498DB,stroke-width:2px
+    style Router fill:#E8DAEF,stroke:#8E44AD,stroke-width:2px
+    style Worker fill:#A9DFBF,stroke:#27AE60,stroke-width:2px
+    style DFLY fill:#FAD7A0,stroke:#F39C12,stroke-width:2px
+    style Prefill fill:#F5B7B1,stroke:#C0392B,stroke-width:2px
+    style Response fill:#ABEBC6,stroke:#1D8348,stroke-width:4px
